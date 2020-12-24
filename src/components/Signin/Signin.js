@@ -20,14 +20,21 @@ class  Signin extends React.Component{
 
     onSubmitSignIn = () =>{
         fetch('http://localhost:3000/signing',{
-            method : 'post',
-            headers : {'Content-Type' : 'application/json'},
-            body : JSON.stringify({
+                method : 'post',
+                headers : {'Content-Type' : 'application/json'},
+                body : JSON.stringify({
                 email : this.state.signInEmail,
                 password : this.state.signInPassword
             })
         })
-         this.props.onRouteSignin('home')
+        .then(response => response.json())
+        .then(user => {
+          if(user.id){
+            this.props.loadUser(user);
+            this.props.onRouteSignin('home');
+          }
+        })
+        
     }
     render(){
         return(
@@ -40,10 +47,11 @@ class  Signin extends React.Component{
                         <div className ="mt3">
                             <label className ="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
                             <input className ="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
-                             type="email"
-                              name="email-adress" 
-                               id="email-address"
-                               onChange = {this.onEmailChange}
+
+                                type="email"
+                                name="email-adress" 
+                                id="email-address"
+                                onChange = {this.onEmailChange}
                                />
                         </div>
                         <div className ="mv3">
@@ -68,6 +76,5 @@ class  Signin extends React.Component{
             </article>
         );
     }
-  
 }
 export default Signin;
