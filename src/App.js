@@ -1,6 +1,5 @@
 import './App.css';
 import Navigation from './components/navigation/Navigation';
-import Clarifai from 'clarifai';
 import Logo from './components/logo/Logo'
 import ImageLinkForm from './components/imageLinkForme/ImageLinkForm';
 import Facerecognition from './components/Facerecognition/Facerecognition';
@@ -10,9 +9,6 @@ import Rank from './components/rank/Rank';
 import Particles from 'react-particles-js';
 import { Component} from 'react';
 
-const app = new Clarifai.App({
-  apiKey: '94b1c1da6e1c40aba8c704a4ef816f25'
- });
 
 const particleOption = {
   
@@ -26,11 +22,8 @@ const particleOption = {
       }
     }
   }
-
-class App extends Component {
-  constructor(){
-    super();
-  this.state = {
+const initialState = 
+  {
     input : '',
     imageUrl : '',
     box : {},
@@ -44,6 +37,11 @@ class App extends Component {
       joined : ""
     }
   }
+
+class App extends Component {
+  constructor(){
+    super();
+  this.state = initialState
 }
 loadUser = (data) =>{
   this.setState({user : {
@@ -71,7 +69,7 @@ loadUser = (data) =>{
   }
   onRouteSignin = (route) =>{
     if (route === 'signout') {
-      this.setState({isSignIn : false})
+      this.setState(initialState)
     }else if (route === 'home') {
       this.setState({isSignIn : true})
     }
@@ -86,14 +84,17 @@ loadUser = (data) =>{
     this.setState({input : event.target.value})
   }
 
-
   onButtonSubmit = () =>{
     this.setState({imageUrl : this.state.input});
+    fetch('http://localhost:3000/imageurl',{
 
-    app.models.predict(
-
-      Clarifai.FACE_DETECT_MODEL,
-    this.state.input)
+      method : 'post',
+        headers : {'Content-Type' : 'application/json'},
+        body : JSON.stringify({
+        input : this.state.input
+        })
+    })
+    .then(response => response.json())
     .then(response =>{ 
 
       if(response){
