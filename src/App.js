@@ -113,7 +113,7 @@ loadUser = (data) =>{
       }
       this.displayFaceBox(this.calculateFaceLocation(response))
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err)); jhjkhj
     //
   }
 
